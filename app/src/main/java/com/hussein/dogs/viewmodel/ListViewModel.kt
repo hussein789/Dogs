@@ -3,20 +3,48 @@ package com.hussein.dogs.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hussein.dogs.model.DogBreed
+import com.hussein.dogs.model.DogsApiService
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 
 class ListViewModel :ViewModel(){
+
+    private val disposable = CompositeDisposable()
+    private val dogsApi = DogsApiService()
+
     val dogs = MutableLiveData<List<DogBreed>>()
     val dogsLoadError = MutableLiveData<Boolean>()
     val loading = MutableLiveData<Boolean>()
 
     fun refresh(){
-        val corgi = DogBreed("1","Corgi","15 years","breedGroup","bredFor","temperament","")
-        val lambador = DogBreed("2","Lambador","20 years","breedGroup","bredFor","temperament","")
-        val policy = DogBreed("3","Policy","25 years","breedGroup","bredFor","temperament","")
+        getDataFromRemote()
+    }
 
-        val dogsList = arrayListOf<DogBreed>(corgi,lambador,policy)
-        dogs.value =  dogsList
-        dogsLoadError.value = false
-        loading.value = false
+    private fun getDataFromRemote(){
+        loading.value = true
+        disposable.add(dogsApi.getDogs()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(object: DisposableSingleObserver<List<DogBreed>>(){
+                override fun onSuccess(dogsList: List<DogBreed>) {
+                    dogs.value = dogsList
+                    loading.value = false
+                    dogsLoadError.value = false
+                }
+
+                override fun onError(e: Throwable) {
+                    loading.value = false
+                    dogsLoadError.value = true
+                }
+            })
+        )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
     }
 }
