@@ -39,6 +39,7 @@ def roomVersion = '2.1.0-rc01'
 def navVersion = '2.1.0-alpha05'
 def preferencesVersion = '1.0.0'
 def daggerVersion = '2.26'
+def epoxyVersion = '3.9.0'
 
 
 dependencies {
@@ -82,6 +83,9 @@ dependencies {
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
 
 
 
