@@ -7,6 +7,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hussein.dogs.R
 import com.hussein.dogs.model.DogBreed
+import com.hussein.dogs.util.getProgressDrawable
+import com.hussein.dogs.util.loadImage
 import kotlinx.android.synthetic.main.item_dog.view.*
 
 class DogsListAdapter(var dogsList:ArrayList<DogBreed>) : RecyclerView.Adapter<DogsListAdapter.DogsViewHolder>() {
@@ -33,6 +35,7 @@ class DogsListAdapter(var dogsList:ArrayList<DogBreed>) : RecyclerView.Adapter<D
             val action = ListFragmentDirections.actionDetailFragment(dogsList[position])
             it.findNavController().navigate(action)
         }
+        holder.view.imageView.loadImage(dog.imageUrl, getProgressDrawable(holder.view.imageView.context))
     }
 
     class DogsViewHolder(val view: View):RecyclerView.ViewHolder(view)
