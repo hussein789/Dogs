@@ -39,6 +39,6 @@ data class DogBreed(
     @SerializedName("url")
     val imageUrl:String?
 ):Parcelable{
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     var uuid:Int = 0
 }
